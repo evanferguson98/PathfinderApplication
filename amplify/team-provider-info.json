@@ -1,0 +1,20 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-pathfinderapp-dev-123131-authRole",
+      "UnauthRoleArn": "arn:aws:iam::401695103445:role/amplify-pathfinderapp-dev-123131-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::401695103445:role/amplify-pathfinderapp-dev-123131-authRole",
+      "Region": "us-west-2",
+      "DeploymentBucketName": "amplify-pathfinderapp-dev-123131-deployment",
+      "UnauthRoleName": "amplify-pathfinderapp-dev-123131-unauthRole",
+      "StackName": "amplify-pathfinderapp-dev-123131",
+      "StackId": "arn:aws:cloudformation:us-west-2:401695103445:stack/amplify-pathfinderapp-dev-123131/b5565980-58a4-11ee-ba62-06a863af1ce7",
+      "AmplifyAppId": "d2wotzhn78vksk"
+    },
+    "categories": {
+      "api": {
+        "pathfinderapp": {}
+      }
+    }
+  }
+}
