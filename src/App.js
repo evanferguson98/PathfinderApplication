@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import L from 'leaflet';
-
+import './App.css'
 import 'leaflet/dist/leaflet.css';
 
 class FantasyMap extends Component {

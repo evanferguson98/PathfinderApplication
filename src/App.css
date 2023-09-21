@@ -1,7 +1,10 @@
-<<<<<<< HEAD
+
 .leaflet-container {
-  height: 100vh; /* or 100vh for full height */
+  height: 100%; /* or 100vh for full height */
   width: 100%;
 }
-=======
->>>>>>> 96cc908b33af30cad5452cbb57b8da7c1c662a70
+
+.leaflet-image-layer{
+  width: fit-content;
+  height: fit-content;
+}
