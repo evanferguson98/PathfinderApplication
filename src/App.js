@@ -37,6 +37,7 @@ class FantasyMap extends Component {
     }
   }
   async drawPolygons() {
+    console.log("polygoning")
     const popupContentAlabaster = `<strong>Alabaster District:</strong><br> To the north, the Alabaster District boasts elegant white-marble buildings, serene gardens, and opulent residences. It's a haven of artistic expression and refined living, offering a stark contrast to the bustling streets below.`;
     // Define popup content for each district
 
