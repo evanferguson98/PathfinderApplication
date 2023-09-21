@@ -18,11 +18,11 @@ class FantasyMap extends Component {
     // Initialize the Leaflet map
     
     if (!this.map) {
-      this.map = L.map('map', { maxZoom: 100 }).setView([51.504, -0.075], 13);
+      this.map = L.map('map', { maxZoom: 100 }).setView([51.504, -0.075], 15);
       console.log(this.map, "Map")
       L.imageOverlay('./magnimar.jpg', this.initialBounds).addTo(this.map);
-      this.map.getContainer().style.width = '80vw';
-      this.map.getContainer().style.height = '80vh';
+      this.map.getContainer().style.width = '99vw';
+      this.map.getContainer().style.height = '98vh';
       this.polygonLayerGroup = L.layerGroup().addTo(this.map);
 
       const homeButton = L.control({ position: 'topleft' });
@@ -147,7 +147,7 @@ class FantasyMap extends Component {
           polygons.forEach((polygon) => {
             const leafletPolygon = L.polygon(polygon.coordinates, {
               color: polygon.color,
-              fillOpacity: polygon.fillOpacity,
+              fillOpacity: .2,
             }).addTo(this.polygonLayerGroup);
             leafletPolygon.bindPopup(polygon.popupContent);
           });
