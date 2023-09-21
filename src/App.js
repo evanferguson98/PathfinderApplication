@@ -8,7 +8,7 @@ class FantasyMap extends Component {
     super(props);
     this.map = null;
     this.initialBounds = [[51.4801, -0.15], [51.5277, -0.0001]];
-    this.polygonLayerGroup = null; // Will hold the polygons
+    this.polygonLayerGroup = null; // Will hold the Districts
     this.state = {
       polygonsDrawn: false,
     };
@@ -151,7 +151,7 @@ class FantasyMap extends Component {
             }).addTo(this.polygonLayerGroup);
             leafletPolygon.bindPopup(polygon.popupContent);
           });
-          const layerControl = L.control.layers(null, { 'Polygons': this.polygonLayerGroup }).addTo(this.map);
+          const layerControl = L.control.layers(null, { 'Districts': this.polygonLayerGroup }).addTo(this.map);
         }
 
 
