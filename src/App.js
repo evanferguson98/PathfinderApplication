@@ -16,6 +16,7 @@ class FantasyMap extends Component {
 
   async componentDidMount() {
     // Initialize the Leaflet map
+    
     if (!this.map) {
       this.map = L.map('map', { maxZoom: 100 }).setView([51.504, -0.075], 10);
       L.imageOverlay('./magnimar.jpg', this.initialBounds).addTo(this.map);
@@ -33,6 +34,7 @@ class FantasyMap extends Component {
       homeButton.addTo(this.map);
       
       await this.drawPolygons();
+      console.log(this.polygonLayerGroup)
       this.setState({ polygonsDrawn: true });
     }
   }
