@@ -28,7 +28,7 @@ class FantasyMap extends Component {
       this.map = L.map('map', { maxZoom: 100 }).setView([51.504, -0.075], 14);
 
       // Add your image as an overlay
-      L.imageOverlay('/magnimar_modified.tif', imageBounds).addTo(this.map);
+      L.imageOverlay('', imageBounds).addTo(this.map);
       L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
