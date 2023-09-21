@@ -7,7 +7,7 @@ class FantasyMap extends Component {
   constructor(props) {
     super(props);
     this.map = null;
-    this.initialBounds = [[51.4801, -0.15], [51.5277, -0.00009]];
+    this.initialBounds = [[51.4801, -0.15], [51.5277, -0.0001]];
     this.polygonLayerGroup = null; // Will hold the polygons
     this.state = {
       polygonsDrawn: false,
@@ -18,10 +18,11 @@ class FantasyMap extends Component {
     // Initialize the Leaflet map
     
     if (!this.map) {
-      this.map = L.map('map', { maxZoom: 100 }).setView([51.504, -0.075], 10);
+      this.map = L.map('map', { maxZoom: 100 }).setView([51.504, -0.075], 13);
+      console.log(this.map, "Map")
       L.imageOverlay('./magnimar.jpg', this.initialBounds).addTo(this.map);
-      this.map.getContainer().style.width = '100vw';
-      this.map.getContainer().style.height = '100vh';
+      this.map.getContainer().style.width = '80vw';
+      this.map.getContainer().style.height = '80vh';
       this.polygonLayerGroup = L.layerGroup().addTo(this.map);
 
       const homeButton = L.control({ position: 'topleft' });
@@ -34,12 +35,12 @@ class FantasyMap extends Component {
       homeButton.addTo(this.map);
       
       await this.drawPolygons();
-      console.log(this.polygonLayerGroup)
+      
       this.setState({ polygonsDrawn: true });
     }
   }
   async drawPolygons() {
-    console.log("polygoning")
+    
     const popupContentAlabaster = `<strong>Alabaster District:</strong><br> To the north, the Alabaster District boasts elegant white-marble buildings, serene gardens, and opulent residences. It's a haven of artistic expression and refined living, offering a stark contrast to the bustling streets below.`;
     // Define popup content for each district
 
