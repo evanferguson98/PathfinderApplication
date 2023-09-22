@@ -6,3 +6,4 @@
     width: 100%;
     height: calc(100vw * (9960 / 6525)); /* Using the image's aspect ratio */
   }
+

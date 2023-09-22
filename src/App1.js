@@ -1,15 +1,124 @@
 import React, { Component } from 'react';
-import L from 'leaflet';
+import L, { marker } from 'leaflet';
 import './App.css'
 import 'leaflet/dist/leaflet.css';
+import 'leaflet-search';
+import 'leaflet-search/dist/leaflet-search.min.css';
 
 class FantasyMap extends Component {
-  centerMarker = null; 
+
   constructor(props) {
     super(props);
     this.map = null;
+
     this.initialBounds = [[51.4801, -0.15], [51.5277, -0.0001]];
     this.polygonLayerGroup = null; // Will hold the Districts
+    this.circleMarkerOptions = {
+      radius: 8,         // size of the dot
+      fillColor: "Blue",
+      color: "#000",
+      weight: 1,
+      opacity: .3,
+      fillOpacity: 0.3
+    };
+    this.locations = [
+      { id: 1, lat: 51.52543494399742, lon: -0.03890203335833676, name: "Fort Indros", description: "Fort Indros" },
+      { id: 2, lat: 51.52232500881185, lon: -0.03321553969826585, name: "Kaddren Villa", description: "Kaddren Villa" },
+      { id: 3, lat: 51.52109699308154, lon: -0.03229282563267155, name: "Nirodin Villa", description: "Nirodin Villa" },
+      { id: 4, lat: 51.517813223147236, lon: -0.0364557681611677, name: "Alabaster Park", description: "Alabaster Park" },
+      { id: 5, lat: 51.516865424380896, lon: -0.03137011156707725, name: "Serpent's Run", description: "Serpent's Run" },
+      { id: 6, lat: 51.513594699717615, lon: -0.032142616366186434, name: "Vanderale Villa", description: "Vanderale Villa" },
+      { id: 7, lat: 51.51222260608819, lon: -0.03244351081822084, name: "Scarnetti Villa", description: "Scarnetti Villa" },
+      { id: 8, lat: 51.510604117359236, lon: -0.032249908699384384, name: "Mindurian Villa", description: "Mindurian Villa" },
+      { id: 9, lat: 51.50908204916927, lon: -0.03143448696700802, name: "Valdemar Villa", description: "Valdemar Villa" },
+      { id: 10, lat: 51.50784032429914, lon: -0.031391570033720846, name: "Versade Villa", description: "Versade Villa" },
+      { id: 11, lat: 51.50085666058579, lon: -0.034030961430662206, name: "Dexrexhi Villa", description: "Dexrexhi Villa" },
+      { id: 12, lat: 51.497825177083875, lon: -0.02845176010380924, name: "Heidmarch Manor", description: "Heidmarch Manor" },
+      { id: 13, lat: 51.49544792562364, lon: -0.02993239430207684, name: "House of Lords", description: "House of Lords" },
+      { id: 14, lat: 51.513623265398564, lon: -0.060424434439967374, name: "Irespan", description: "Irespan" },
+      { id: 15, lat: 51.51023214583622, lon: -0.050210204318499325, name: "Golemworks", description: "Golemworks" },
+      { id: 16, lat: 51.50808252594996, lon: -0.05016728738521215, name: "Cenotaph", description: "Cenotaph" },
+      { id: 17, lat: 51.50439722732018, lon: -0.04589705252349808, name: "Founder's Archive & Museum of Ages", description: "Founder's Archive & Museum of Ages" },
+      { id: 18, lat: 51.503782612860874, lon: -0.054716352011543457, name: "Indros cul Vydrarch", description: "Indros cul Vydrarch" },
+      { id: 19, lat: 51.502874582722214, lon: -0.051046954215809855, name: "Pediment Building", description: "Pediment Building" },
+      { id: 20, lat: 51.50180628880599, lon: -0.04666942702089783, name: "Usher's Hall", description: "Usher's Hall" },
+      { id: 21, lat: 51.498067062881596, lon: -0.038086040364202496, name: "Lord-Mayor's Menagerie", description: "Lord-Mayor's Menagerie" },
+      { id: 22, lat: 51.502741047352224, lon: -0.05671198940923717, name: "Osprey Club", description: "Cathedral of Abadar" },
+      { id: 23, lat: 51.49686510368117, lon: -0.05583219227693005, name: "Cathedral of Abadar", description: "Cathedral of Abadar" },
+      { id: 24, lat: 51.49896183414962, lon: -0.0636645326011598, name: "Kaijitsu Villa", description: "Kaijitsu Villa" },
+      { id: 25, lat: 51.49734589116492, lon: -0.06261306773572395, name: "Deverin Villa", description: "Deverin Villa" },
+      { id: 26, lat: 51.495636401515206, lon: -0.06224827380280296, name: "House of Welcome", description: "House of Welcome" },
+      { id: 27, lat: 51.49339259905163, lon: -0.062419941535931674, name: "Defiant's Garden", description: "Defiant's Garden" },
+      { id: 28, lat: 51.48921188678665, lon: -0.06724809653033903, name: "Arvensoar", description: "Arvensoar" },
+      { id: 29, lat: 51.4898263285956, lon: -0.05645448780953411, name: "Temple of Iomedae", description: "Temple of Iomedae" },
+      { id: 30, lat: 51.48898480837029, lon: -0.056475946276177705, name: "Founder's Flame", description: "Founder's Flame" },
+      { id: 31, lat: 51.48588574282894, lon: -0.05591802614348441, name: "The Guardians", description: "The Guardians" },
+      { id: 32, lat: 51.487769251734655, lon: -0.044180244890441596, name: "Bastion of the Nail", description: "Bastion of the Nail" },
+      { id: 33, lat: 51.487275005154196, lon: -0.03971688382897521, name: "Boria's", description: "Boria's" },
+      { id: 34, lat: 51.492549969499585, lon: -0.03329981550599826, name: "Triodea", description: "Triodea" },
+      { id: 35, lat: 51.51200880362017, lon: -0.06734458335604822, name: "The Old Fang", description: "The Old Fang" },
+      { id: 36, lat: 51.50978583441564, lon: -0.06640041082381033, name: "Eyes of the Hawk", description: "Eyes of the Hawk" },
+      { id: 37, lat: 51.50819878224666, lon: -0.06254818066322888, name: "No-Horn", description: "No-Horn" },
+      { id: 38, lat: 51.507531179494464, lon: -0.06647508005866555, name: "Carent's Camp", description: "Carent's Camp" },
+      { id: 39, lat: 51.50802520647215, lon: -0.07012301938777556, name: "Bazaar of Sails", description: "Bazaar of Sails" },
+      { id: 40, lat: 51.50793174231965, lon: -0.07503700824871729, name: "Captains Club", description: "Captain's Club" },
+      { id: 41, lat: 51.50385918950095, lon: -0.0654665321264969, name: "The Shucked Oyster", description: "The Shucked Oyster" },
+      { id: 42, lat: 51.501522314524, lon: -0.06632487079218043, name: "Bronze House", description: "Bronze House" },
+      { id: 43, lat: 51.501455544906655, lon: -0.06973676698821098, name: "Impound Yard", description: "Impound Yard" },
+      { id: 44, lat: 51.50194250425557, lon: -0.08239660920927207, name: "The Fifth Ward", description: "The Fifth Ward" },
+      { id: 45, lat: 51.49654127074572, lon: -0.08147463007707191, name: "Merchants Guildhall", description: "Merchants Guildhall" },
+      { id: 46, lat: 51.50482085003467, lon: -0.07703272748222911, name: "Outcast's Cove", description: "Outcast's Cove" },
+      { id: 47, lat: 51.497756593504796, lon: -0.06531640469584989, name: "Matador's Lodge", description: "Matador's Lodge" },
+      { id: 48, lat: 51.49528584837605, lon: -0.06484431842973094, name: "The Fish Tank", description: "The Fish Tank" },
+      { id: 49, lat: 51.49244098676318, lon: -0.0654880724289786, name: "Gilded Cage", description: "Gilded Cage" },
+      { id: 50, lat: 51.49754291273022, lon: -0.07383541595261446, name: "The Fancy Reefclaw", description: "The Fancy Reefclaw" },
+      { id: 51, lat: 51.49273483045675, lon: -0.07310582808679246, name: "The Courtesan and Unicorn", description: "The Courtesan and Unicorn" },
+      { id: 52, lat: 51.49440436094404, lon: -0.07859919554709108, name: "The Dreaming Dryad", description: "The Dreaming Dryad" },
+      { id: 53, lat: 51.49456463265412, lon: -0.08254755340917132, name: "Mapstone Monument", description: "Mapstone Monument" },
+      { id: 54, lat: 51.48911507837906, lon: -0.0853371540725978, name: "The Celwynvian Charge", description: "The Celwynvian Charge" },
+      { id: 55, lat: 51.5112654755577, lon: -0.09690316351002927, name: "The Wyrmwatch", description: "The Wyrmwatch" },
+      { id: 56, lat: 51.50840825944374, lon: -0.09780441910899997, name: "The Battle of Charda", description: "The Battle of Charda" },
+      { id: 57, lat: 51.50707305029603, lon: -0.09398481204676123, name: "Outcast Fishery", description: "Outcast Fishery" },
+      { id: 58, lat: 51.50612142200567, lon: -0.08972526828129547, name: "Shipmakers Guild", description: "Shipmakers Guild" },
+      { id: 59, lat: 51.50541373051261, lon: -0.08553013805283395, name: "Harbormaster", description: "Harbormaster" },
+      { id: 60, lat: 51.50368451355049, lon: -0.09065871158021156, name: "Jaijarko Castle", description: "Jaijarko Castle" },
+      { id: 61, lat: 51.50333742256177, lon: -0.09792212485279174, name: "Lost Lane", description: "Lost Lane" },
+      { id: 62, lat: 51.501213645218535, lon: -0.10948792016638455, name: "Washer's Row", description: "Washers' Row" },
+      { id: 63, lat: 51.498934416848854, lon: -0.1064085849154961, name: "The Pig", description: "The Pig" },
+      { id: 64, lat: 51.494874415745045, lon: -0.08793284513694656, name: "Our Lady of Blessed Waters", description: "Our Lady of Blessed Waters" },
+      { id: 65, lat: 51.4931247642985, lon: -0.08894139306911521, name: "Deadeye Lodge", description: "Deadeye Lodge" },
+      { id: 66, lat: 51.48995919370168, lon: -0.08904868540233314, name: "Dome of the Savored Sting", description: "Dome of the Savored Sting" },
+      { id: 67, lat: 51.488142020795166, lon: -0.08889844673850346, name: "Founder's Honor", description: "Founder's Honor" },
+      { id: 68, lat: 51.49535468062786, lon: -0.09276097073400937, name: "Stone of the Seers", description: "Stone of the Seers" },
+      { id: 69, lat: 51.491254289907836, lon: -0.0945205649986436, name: "Church of Pharasma", description: "Church of Pharasma" },
+      { id: 70, lat: 51.496476547375785, lon: -0.09679516246266395, name: "Aquaretum", description: "Aquaretum" },
+      { id: 71, lat: 51.49365847251813, lon: -0.10864023604890471, name: "The Burn", description: "The Burn" },
+      { id: 72, lat: 51.49511386092798, lon: -0.11484142781169383, name: "Varisian Council", description: "Varisian Council" },
+      { id: 73, lat: 51.49319058638843, lon: -0.11593580961041686, name: "Cynosure Tower", description: "Cynosure Tower" },
+      { id: 74, lat: 51.495453959525676, lon: -0.12297333494068588, name: "Seven's Sawmill", description: "Seven's Sawmill" },
+      { id: 75, lat: 51.501758430099294, lon: -0.13245785722342032, name: "Red Kestrel Imports", description: "Red Kestrel Imports" },
+      { id: 76, lat: 51.49934132014766, lon: -0.13880956334938246, name: "Billivin's Benevolent Balms and Effulgent Elixirs", description: "Billivin's Benevolent Balms and Effulgent Elixirs" },
+      { id: 77, lat: 51.496109403795266, lon: -0.12966825655999384, name: "Embasssy Building", description: "Embassy Building" },
+      { id: 78, lat: 51.49492074881989, lon: -0.12930346262707282, name: "Rose and Rake", description: "Rose and Rake" },
+      { id: 79, lat: 51.493585144451764, lon: -0.13217889715707368, name: "Mistress of Angels", description: "Mistress of Angels" },
+      { id: 80, lat: 51.49230292744223, lon: -0.12651386196364636, name: "Pug's Contraptions", description: "Pug's Contraptions" },
+      { id: 81, lat: 51.51477936094466, lon: -0.06890014818713432, name: "The Gull", description: "The Gull" },
+      { id: 82, lat: 51.51937477068025, lon: -0.09947702903829958, name: "Friendly Merchant", description: "Friendly Merchant" },
+      { id: 83, lat: 51.51771950405493, lon: -0.06085178908316059, name: "The Rat", description: "The Rat" },
+      { id: 84, lat: 51.52161729401428, lon: -0.0923099011799611, name: "Swift Dolphin Warehouse", description: "Swift Dolphin Warehouse" },
+      { id: 85, lat: 51.51958834908862, lon: -0.08685945065296964, name: "The Harpy", description: "The Harpy" },
+      { id: 86, lat: 51.51790639200911, lon: -0.09033572224893095, name: "The Shadow Cloak", description: "The Shadow Cloak" },
+      { id: 87, lat: 51.51182976273524, lon: -0.06426473166546876, name: "The Gecko", description: "The Gecko" },
+      { id: 88, lat: 51.51614252766991, lon: -0.09385549157419072, name: "Shrine of Sarenrae", description: "Shrine of Sarenrae" },
+      { id: 89, lat: 51.51814718518309, lon: -0.07428455084411258, name: "The Whale", description: "The Whale" },
+      { id: 90, lat: 51.52124405754721, lon: -0.06638783511995205, name: "The Salmon", description: "The Salmon" },
+      { id: 91, lat: 51.521270753807244, lon: -0.07917708123843072, name: "The Firepelt", description: "The Firepelt" },
+      { id: 92, lat: 51.52426063590199, lon: -0.07115161471440869, name: "The Osprey", description: "The Osprey" },
+      { id: 93, lat: 51.524100468623416, lon: -0.08385502696633297, name: "The Crow", description: "The Crow" },
+      { id: 94, lat: 51.52719693616783, lon: -0.07570080964246939, name: "The Shark", description: "The Shark" }
+    ];
+    //const markers = this.locations.map(location => L.marker([location.lat, location.lon]).bindPopup(location.name));
+    //const featureGrouproup = L.featureGroup(markers);
     this.state = {
       polygonsDrawn: false,
       loaded: false,
@@ -21,17 +130,28 @@ class FantasyMap extends Component {
       this.map.setView([lat, lng], zoom);
     }
   }
-  async componentDidMount() {
-    // Initialize the Leaflet map
 
-    // Add an event listener to update the marker's position when the map's view changes
+  async componentDidMount() {
+    const blankMarkerIcon = L.divIcon({
+      className: 'blank-marker', // Define a custom class for the blank marker
+      iconSize: [0, 0], // Set the size of the blank marker to 0x0 (invisible)
+  });
+    const geoJsonStyle = (feature) => {
+      return {
+        icon: L.divIcon({
+          className: 'blank-marker',
+          iconSize: [0, 0], // Adjust icon size as needed
+      }),
+
+    }
+  }
+    
+
     if (!this.map) {
       this.map = L.map('map', { maxZoom: 100 }).setView([51.502608028263154, -0.07338228937953106], 15);
-      const center = this.map.getCenter();
-      console.log("Map Center:", center);
-      
+
       L.imageOverlay('./magnimar.jpg', this.initialBounds).addTo(this.map);
-     
+
       this.map.getContainer().style.width = '99vw';
       this.map.getContainer().style.height = '98vh';
       this.polygonLayerGroup = L.layerGroup().addTo(this.map);
@@ -45,11 +165,45 @@ class FantasyMap extends Component {
       };
       homeButton.addTo(this.map);
 
+
+      const geoJSONFeatures = this.locations.map(location => {
+        return {
+            type: "Feature",
+            properties: {
+                name: location.name,
+                description: location.description
+            },
+            geometry: {
+                type: "Point",
+                coordinates: [location.lon, location.lat]
+            }
+        };
+    });
+    const geoJSONLayer = L.geoJSON(geoJSONFeatures, {
+      pointToLayer: (feature, latlng) => {
+          // Use the GeoJSON style function to set the marker icon
+          return L.marker(latlng, geoJsonStyle(feature));
+      }
+    })
+
+      this.map.addControl(new L.Control.Search({
+        layer: geoJSONLayer,
+        propertyName: 'name',
+        initial: false,
+        zoom: 17,
+        position: 'topright'
+      }));
       await this.drawPolygons();
+      this.locations.forEach(location => {
+        L.circleMarker([location.lat, location.lon], this.circleMarkerOptions)
+          .addTo(this.map)
+       
+          .bindPopup(`<strong>${location.name}</strong><br>${location.description}`);
+      });
       this.setState({ polygonsDrawn: true, loaded: true }); // Set loaded to true after everything
 
     }
-    this.centerMarker = L.marker(this.map.getCenter()).addTo(this.map);
+
 
   }
   handleMapClick = (event) => {
@@ -57,7 +211,8 @@ class FantasyMap extends Component {
     const { lat, lng } = event.latlng;
 
     // Log the coordinates to the console
-    console.log(`Clicked Point: Latitude = ${lat}, Longitude = ${lng}`);
+
+    console.log(`lat: ${lat}, lon: ${lng},`);
   };
   componentDidUpdate(prevProps, prevState) {
     if (!prevState.loaded && this.state.loaded) {
